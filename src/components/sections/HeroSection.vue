@@ -4,6 +4,32 @@ import { ArrowDownRight, Download, Mail } from 'lucide-vue-next'
 import RevealMotion from '../ui/RevealMotion.vue'
 
 const OceanCanvas = defineAsyncComponent(() => import('../background/OceanCanvas.vue'))
+
+type HeroVessel = {
+  id: number
+  top: string
+  left: string
+  scale: number
+  duration: number
+  delay: number
+  opacity: number
+}
+
+const vesselCount = 7
+
+function randomBetween(min: number, max: number) {
+  return Math.random() * (max - min) + min
+}
+
+const vessels: HeroVessel[] = Array.from({ length: vesselCount }, (_, index) => ({
+  id: index + 1,
+  top: `${randomBetween(8, 88).toFixed(2)}%`,
+  left: `${randomBetween(6, 92).toFixed(2)}%`,
+  scale: Number(randomBetween(0.62, 1.28).toFixed(2)),
+  duration: Number(randomBetween(14, 28).toFixed(2)),
+  delay: Number(randomBetween(0, 9).toFixed(2)),
+  opacity: Number(randomBetween(0.3, 0.62).toFixed(2)),
+}))
 </script>
 
 <template>
@@ -11,8 +37,20 @@ const OceanCanvas = defineAsyncComponent(() => import('../background/OceanCanvas
     <OceanCanvas />
 
     <div class="grid-overlay" aria-hidden="true" />
-    <div class="ship ship-a" aria-hidden="true" />
-    <div class="ship ship-b" aria-hidden="true" />
+    <div
+      v-for="vessel in vessels"
+      :key="vessel.id"
+      class="ship"
+      :style="{
+        top: vessel.top,
+        left: vessel.left,
+        transform: `translate(-50%, -50%) scale(${vessel.scale})`,
+        opacity: vessel.opacity,
+        animationDuration: `${vessel.duration}s`,
+        animationDelay: `${vessel.delay}s`,
+      }"
+      aria-hidden="true"
+    />
 
     <div class="hero-layout">
       <div class="hero-content">
@@ -49,10 +87,10 @@ const OceanCanvas = defineAsyncComponent(() => import('../background/OceanCanvas
       </div>
 
       <div class="portrait-wrap">
-        <div class="portrait-card" role="img" aria-label="Professional portrait placeholder">
+        <div class="portrait-card" role="img" aria-label="Portrait of John">
           <div class="portrait-ring" />
-          <p>Executive Portrait</p>
-          <span>Professional image placeholder</span>
+          <p>John</p>
+          <span>Maritime Chief Engineer</span>
         </div>
       </div>
     </div>
@@ -62,11 +100,17 @@ const OceanCanvas = defineAsyncComponent(() => import('../background/OceanCanvas
 <style scoped>
 .hero {
   position: relative;
-  border-radius: 2rem;
-  margin: 0.5rem 1rem 2rem;
+  min-height: calc(100svh - 88px);
+  display: grid;
+  align-items: center;
+  width: 100vw;
+  margin: 0 0 2rem;
+  margin-inline: calc(50% - 50vw);
+  border-radius: 0;
   overflow: hidden;
-  padding: clamp(2rem, 7vw, 6rem);
+  padding-block: clamp(2rem, 7vw, 6rem);
   border: 1px solid var(--card-border);
+  border-inline-width: 0;
   background:
     radial-gradient(circle at 20% 20%, color-mix(in oklab, var(--brand-cyan), transparent 80%), transparent 40%),
     radial-gradient(circle at 80% 0%, color-mix(in oklab, var(--brand-gold), transparent 86%), transparent 50%),
@@ -91,7 +135,7 @@ const OceanCanvas = defineAsyncComponent(() => import('../background/OceanCanvas
   height: 16px;
   border-radius: 10px 10px 4px 4px;
   background: linear-gradient(to right, color-mix(in oklab, var(--brand-cyan), white 45%), color-mix(in oklab, var(--brand-cyan), transparent 20%));
-  opacity: 0.45;
+  animation: floatShip 20s linear infinite;
 }
 
 .ship::after {
@@ -105,26 +149,17 @@ const OceanCanvas = defineAsyncComponent(() => import('../background/OceanCanvas
   background: color-mix(in oklab, var(--brand-gold), white 20%);
 }
 
-.ship-a {
-  right: 18%;
-  bottom: 12%;
-  animation: floatShip 18s linear infinite;
-}
-
-.ship-b {
-  left: 12%;
-  bottom: 28%;
-  transform: scale(0.75);
-  animation: floatShip 21s linear infinite reverse;
-}
-
 .hero-layout {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.85fr);
+  width: min(1300px, calc(100% - 1.2rem));
+  margin-inline: auto;
+  padding-inline: calc(clamp(1rem, 3vw, 2rem) + 1rem);
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1.45fr) minmax(250px, 0.9fr);
   align-items: center;
-  gap: clamp(1rem, 3vw, 2.5rem);
+  gap: clamp(1.2rem, 3.4vw, 3rem);
 }
 
 .hero-content {
@@ -201,12 +236,13 @@ h1 {
 
 .portrait-wrap {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .portrait-card {
-  width: min(260px, 100%);
+  width: clamp(230px, 22vw, 320px);
   aspect-ratio: 3 / 4;
+  padding: clamp(0.9rem, 1.4vw, 1.2rem);
   border-radius: 1.25rem;
   border: 1px solid var(--card-border);
   background: linear-gradient(160deg, color-mix(in oklab, var(--bg-primary), white 10%), color-mix(in oklab, var(--bg-primary), black 8%));
@@ -241,10 +277,21 @@ h1 {
 @media (max-width: 950px) {
   .hero-layout {
     grid-template-columns: 1fr;
+    gap: 1.4rem;
   }
 
   .portrait-wrap {
     justify-content: start;
+  }
+
+  .portrait-card {
+    width: min(280px, 100%);
+  }
+}
+
+@media (max-width: 880px) {
+  .hero-layout {
+    padding-inline: 1.75rem;
   }
 }
 
