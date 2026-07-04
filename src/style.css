@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap');
+@import 'tailwindcss';
+
+:root {
+  --bg-primary: #071a2d;
+  --bg-secondary: #0b243f;
+  --brand-cyan: #0ea5e9;
+  --brand-gold: #d4af37;
+  --text-primary: #f4f8ff;
+  --text-muted: #adc3d8;
+  --card-bg: rgb(255 255 255 / 0.06);
+  --card-bg-strong: rgb(255 255 255 / 0.08);
+  --card-border: rgb(255 255 255 / 0.13);
+  --card-shadow: 0 14px 40px rgb(1 12 25 / 0.38);
+  --font-body: 'Manrope', 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-display: 'Sora', 'Avenir Next', 'Segoe UI', sans-serif;
+}
+
+:root[data-theme='light'] {
+  --bg-primary: #e8f4ff;
+  --bg-secondary: #f9fcff;
+  --text-primary: #0f2237;
+  --text-muted: #405975;
+  --card-bg: rgb(255 255 255 / 0.64);
+  --card-bg-strong: rgb(255 255 255 / 0.8);
+  --card-border: rgb(7 26 45 / 0.14);
+  --card-shadow: 0 14px 30px rgb(9 30 66 / 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--brand-cyan), transparent 88%), transparent 30%),
+    radial-gradient(circle at 100% 8%, color-mix(in oklab, var(--brand-gold), transparent 88%), transparent 35%),
+    linear-gradient(170deg, var(--bg-primary), var(--bg-secondary));
+  min-height: 100svh;
+}
+
+a {
+  color: inherit;
+}
+
+#app {
+  width: min(1300px, 100% - 1.2rem);
+  margin-inline: auto;
+  padding-bottom: 1.5rem;
+}
+
+main {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.section {
+  padding: clamp(1.4rem, 3.5vw, 2.6rem);
+  border-radius: 1.2rem;
+  border: 1px solid var(--card-border);
+  background: linear-gradient(150deg, var(--card-bg), var(--card-bg-strong));
+  box-shadow: var(--card-shadow);
+}
+
+.shell {
+  margin: 0 1rem;
+}
+
+@media (max-width: 720px) {
+  .shell {
+    margin: 0 0.55rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
